@@ -92,20 +92,20 @@ class DFT:
       raise Exception('Input must be a power of 2.')
 
     X_1d = np.random.random(num_1d_samples)
-    fft = np.fft.fft(X_1d)
+    fft_1d = np.fft.fft(X_1d)
 
     num_2d_samples = int(math.sqrt(1024))
     X_2d = np.random.rand(num_2d_samples, num_2d_samples)
-    fft2 = np.fft.fft2(X_2d)
+    fft_2d = np.fft.fft2(X_2d)
 
     assertions = [
-      (DFT.naive_1d, X_1d, fft),
-      (DFT.naive_1d_inverse, fft, X_1d),
-      (DFT.fft_1d, X_1d, fft),
-      (DFT.fft_1d_inverse, fft, X_1d),
-      (DFT.naive_2d, X_2d, fft2),
-      (DFT.fft_2d, X_2d, fft2),
-      (DFT.fft_2d_inverse, fft2, X_2d),
+      (DFT.naive_1d, X_1d, fft_1d),
+      (DFT.naive_1d_inverse, fft_1d, X_1d),
+      (DFT.fft_1d, X_1d, fft_1d),
+      (DFT.fft_1d_inverse, fft_1d, X_1d),
+      (DFT.naive_2d, X_2d, fft_2d),
+      (DFT.fft_2d, X_2d, fft_2d),
+      (DFT.fft_2d_inverse, fft_2d, X_2d),
     ]
 
     for operator, discrete_fn, np_output in assertions:
