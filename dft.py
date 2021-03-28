@@ -4,26 +4,27 @@ import numpy as np
 
 class DFT:
   def naive_1d(x):
-    x = np.array(x, dtype=complex)
-    N = len(x)
-    X = np.zeros(N, dtype=complex)
-
-    for k, n in np.ndindex((N, N)):
-      X[k] += x[n] * np.exp(-2j * np.pi / N * k * n)
-
-    return X
+    return DFT._naive_1d_helper(x)
 
   def naive_1d_inverse(X):
-    X = np.array(X, dtype=complex)
-    N = len(X)
-    x = np.zeros(N, dtype=complex)
+    return DFT._naive_1d_helper(X, inverse=True)
 
-    for n in range(N):
-      for k in range(N):
-        x[n] += X[k] * np.exp(2j * np.pi / N * k * n)
-      x[n] /= N
+  def _naive_1d_helper(arr, inverse=False):
+    arr = np.array(arr, dtype=complex)
+    N = len(arr)
+    transform = np.zeros(N, dtype=complex)
 
-    return x
+    mult = -1
+    if inverse:
+      mult = 1
+
+    for k in range(N):
+      for n in range(N):
+        transform[k] += arr[n] * np.exp(mult * 2j * np.pi / N * k * n)
+      if inverse:
+        transform[k] /= N
+
+    return transform
 
   def fft_1d(x):
     x = np.array(x, dtype=complex)
