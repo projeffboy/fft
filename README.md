@@ -20,3 +20,5 @@ optional arguments:
 
   -i IMAGE    filename of the image we wish to take the DFT of (default: moonlanding.png)
 ```
+
+Google doc of our report: https://docs.google.com/document/d/1E9MfSqbCLaHIBlYxmepxhwBoUhXF76diD7jGC6suzQc/edit?usp=sharing
