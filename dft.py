@@ -9,63 +9,49 @@ class DFT:
   def naive_1d_inverse(X):
     return DFT._naive_1d_helper(X, inverse=True)
 
-  def _naive_1d_helper(arr, inverse=False):
-    arr = np.array(arr, dtype=complex)
-    N = len(arr)
-    transform = np.zeros(N, dtype=complex)
+  def _naive_1d_helper(x, inverse=False):
+    x = np.array(x, dtype=complex)
+    N = len(x)
+    X = np.zeros(N, dtype=complex)
 
-    mult = -1
-    if inverse:
-      mult = 1
+    mult = 1 if inverse else -1
 
     for k in range(N):
       for n in range(N):
-        transform[k] += arr[n] * np.exp(mult * 2j * np.pi / N * k * n)
+        X[k] += x[n] * np.exp(mult * 2j * np.pi / N * k * n)
       if inverse:
-        transform[k] /= N
+        X[k] /= N
 
-    return transform
+    return X
 
   def fft_1d(x):
+    return DFT._fft_1d_helper(x, DFT.naive_1d)
+
+  def fft_1d_inverse(X):
+    return DFT._fft_1d_helper(X, DFT.naive_1d_inverse, inverse=True)
+
+  def _fft_1d_helper(x, base_fn, inverse=False):
     x = np.array(x, dtype=complex)
     N = len(x)
 
     if N % 2 != 0:
       raise Exception('Input must be a power of 2.')
     elif N <= 16:
-      return DFT.naive_1d(x)
+      return base_fn(x)
     else:
-      X_even = DFT.fft_1d(x[::2])
-      X_odd = DFT.fft_1d(x[1::2])
+      X_even = DFT._fft_1d_helper(x[::2], base_fn, inverse)
+      X_odd = DFT._fft_1d_helper(x[1::2], base_fn, inverse)
       X = np.zeros(N, dtype=complex)
 
       half_N = N // 2
+      mult = 1 if inverse else -1
       for k in range(N):
         X[k] = X_even[k % half_N] \
-          + np.exp(-2j * np.pi / N * k) * X_odd[k % half_N]
+          + np.exp(mult * 2j * np.pi / N * k) * X_odd[k % half_N]
+        if inverse:
+          X[k] /= 2
 
       return X
-
-  def fft_1d_inverse(X):
-    X = np.array(X, dtype=complex)
-    N = len(X)
-
-    if N % 2 != 0:
-      raise Exception('Input must be a power of 2.')
-    elif N <= 16:
-      return DFT.naive_1d_inverse(X)
-    else:
-      x_even = DFT.fft_1d_inverse(X[::2])
-      x_odd = DFT.fft_1d_inverse(X[1::2])
-      x = np.zeros(N, dtype=complex)
-
-      half_N = N // 2
-      for n in range(N):
-        x[n] = x_even[n % half_N] \
-          + np.exp(2j * np.pi / N * n) * x_odd[n % half_N]
-        x[n] /= 2
-
-      return x
 
   def naive_2d(f):
     f = np.array(f, dtype=complex)
