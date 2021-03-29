@@ -63,6 +63,10 @@ class DFT:
 
     return F
 
+  # not fft but more efficient version of naive
+  def naive_2d_efficient(f):
+    return DFT._helper_2d(f, DFT.naive_1d)
+
   # naive 2d inverse not necessary
 
   def fft_2d(f):
@@ -104,6 +108,7 @@ class DFT:
       (DFT.fft_1d, X_1d, fft_1d),
       (DFT.fft_1d_inverse, fft_1d, X_1d),
       (DFT.naive_2d, X_2d, fft_2d),
+      (DFT.naive_2d_efficient, X_2d, fft_2d),
       (DFT.fft_2d, X_2d, fft_2d),
       (DFT.fft_2d_inverse, fft_2d, X_2d),
     ]
