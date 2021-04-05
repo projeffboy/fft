@@ -75,7 +75,7 @@ class DFT:
   def fft_2d_inverse(F):
     return DFT._helper_2d(F, DFT.fft_1d_inverse, inverse=True)
 
-  def _helper_2d(matrix, fn, inverse=False, withRatio=False, ratio=0.00):
+  def _helper_2d(matrix, fn, ratio=0.50, inverse=False):
     matrix = np.array(matrix, dtype=complex)
     N, M = matrix.shape
     transform = np.zeros((N, M), dtype=complex)
@@ -88,13 +88,6 @@ class DFT:
 
     transform = np.apply_along_axis(fn, axis1, matrix)
     transform = np.apply_along_axis(fn, axis2, transform)
-
-    if withRatio:
-      inv_ratio = (1-ratio)
-      rows, columns = transform.shape
-      transform[int(rows*ratio):int(rows*(inv_ratio))] = 0
-      transform[:, int(columns*ratio):int(columns*(inv_ratio))] = 0
-
     return transform
 
   def test(num_1d_samples=1024):

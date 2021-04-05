@@ -21,45 +21,52 @@ class Modes:
       size = (x,y)
       image = np.zeros(size)
       image[:inputImage.shape[0], :inputImage.shape[1]] = inputImage
-
+      print(image.shape)
+      print(inputImage.shape)
       return image, inputImage
 
 
   def __init__(self, image, mode):
-  
+    
     if mode == 1:
+      
       print('This is mode ', mode)
 
       image, inputImage = self.processImage(image)
 
       ft = DFT.fft_2d(image)
-      pltX = image[:inputImage.shape[0]]
-      pltY = image[:inputImage.shape[1]]
 
+      #npft = np.fft.fft2(image)
+      
       figure, axis = plt.subplots(1, 2)
-      axis[0].imshow(pltX, pltY, plt.cm.gray)
-      axis[1].imshow(np.abs(ft), norm=colors.Normalize())
+      axis[0].imshow(image[:inputImage.shape[0], :inputImage.shape[1]], plt.cm.gray)
+      axis[1].imshow(np.abs(ft), norm=colors.LogNorm())
       axis[1].set_title('Fourier Transform 2D')
-      figure.suptitle('Mode 1')
       plt.show()
 
     elif mode == 2:
       print('This is mode', mode)
-      
       image, inputImage = self.processImage(image)
 
-      ft = DFT.fft_2d(image, withRatio=True, ratio=0.15)
-      ift = DFT.fft_2d_inverse(ft)
 
-      pltX = image[:inputImage.shape[0]]
-      pltY = image[:inputImage.shape[1]]
+      ft = DFT.fft_2d(image)
+
+      threshold = 0.25
+      startIndexX = int(ft.shape[0]* threshold)
+      endIndexX = int(ft.shape[0]* (1-threshold))
+      startIndexY = int(ft.shape[1]* threshold)
+      endIndexY = int(ft.shape[1]* (1-threshold))
+
+      #zero out from ranges of index
+      ft[:, startIndexY:endIndexY] = 0
+      ft[startIndexX:endIndexX] = 0
+
+      ift = DFT.fft_2d_inverse(ft).real
 
       figure, axis = plt.subplots(1, 2)
-      axis[0].imshow(pltX, pltY, plt.cm.gray)
+      axis[0].imshow(image[:inputImage.shape[0], :inputImage.shape[1]], plt.cm.gray)
       axis[1].imshow(ift[:inputImage.shape[0], :inputImage.shape[1]], plt.cm.gray)
-      axis[1].set_title('Fourier Transform 2D w/o Noise')
-      figure.suptitle('Mode 2')
-
+      axis[1].set_title('Denoised 2D Fourier Transform')
       plt.show()
 
     elif mode == 3:
