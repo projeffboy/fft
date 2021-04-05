@@ -1,5 +1,4 @@
 # A2_316
-**Warning:** We don't commit the compressed matrices. If we forgot to submit them, then run the necessary command to get them.
 
 Use Python 3.9
 
